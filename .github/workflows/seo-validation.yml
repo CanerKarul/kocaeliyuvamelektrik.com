@@ -36,7 +36,7 @@ jobs:
           assert "7/24 telefonla ulaşabilirsiniz" in home, "24/7 contact distinction missing"
           assert "09.30–18.30" in home, "Planned service hours missing"
           assert "Elektrik Arıza Tespiti ve Tamiri" in fault, "Fault landing page missing"
-          assert "Acil elektrik arızasında" in fault, "Emergency explanation missing"
+          assert "Gece acil elektrik arızasında" in fault, "Emergency explanation missing"
           assert "fiziksel dükkânda müşteri kabul etmiyoruz" in contact, "Service-area business info missing"
           assert "streetAddress" not in home, "Old private street address in structured data"
           assert "canonical" in home and "canonical" in fault, "Canonical tags missing"
