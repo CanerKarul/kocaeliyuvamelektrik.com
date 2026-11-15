@@ -155,6 +155,26 @@ FAQS = [
 
 BLOGS = [
 {
+  'slug':'komsularda-elektrik-var-evde-yok',
+  'title':'Komşularda Elektrik Var, Evde Yok',
+  'intro':'Binanın diğer dairelerinde elektrik varken sizin evinizde kesinti mi var? Olası nedenleri ve güvenli şekilde nasıl yardım isteyebileceğinizi öğrenin.',
+  'sections':[
+    ('Önce kesintinin kapsamını belirleyin',
+     'Komşuların veya ortak alan aydınlatmasının çalışması, sorunun yalnızca dairenizde olduğunu düşündürebilir; ancak tek başına arızanın yerini göstermez. Bütün dairede mi, yoksa sadece bazı priz ve odalarda mı elektrik olmadığını gözlemleyin. Kıvılcım, yanık kokusu veya duman varsa kontrol için yaklaşmayın; güvenli bir alana uzaklaşın.'),
+    ('Neden yalnızca bir dairede elektrik kesilir?',
+     'Daire içindeki bir devre kesicinin veya kaçak akım rölesinin açması, gevşek veya hasarlı bağlantılar, daireye gelen besleme hattı ve sayaç ya da dağıtım panosuyla ilgili sorunlar olası nedenlerdendir. Bazı ışıkların yanıp prizlerin çalışmaması farklı bir devrede arıza olabileceğine işaret edebilir. Kesin teşhis, uygun ekipmanla yetkili kontrol sonrasında konur.'),
+    ('Sigortayı tekrar tekrar açmalı mıyım?',
+     'Hayır. Devre kesici ya da kaçak akım rölesi sürekli atıyorsa zorlayarak tekrar açmaya çalışmayın; daha yüksek değerli bir sigorta taktırarak arızayı gizlemeyin. Pano kapağını sökmek, kabloları kontrol etmek veya sayaç bağlantısına dokunmak tehlikelidir. Durumu elektrikçiye anlatıp yerinde inceleme isteyin.'),
+    ('Bina panosuna ve sayaç bölümüne kim bakmalı?',
+     'Dairede kesinti olması her zaman daire içi tesisatın arızalı olduğu anlamına gelmez. Sorunun ortak bina panosuyla veya dağıtım şirketi ekipmanıyla ilgili olması durumunda bina yönetimi ve gerekli yetkili birimlerle koordinasyon gerekebilir. Yetkisiz kişilerin ortak panolara ve mühürlü sayaç bölümlerine müdahale etmemesi önemlidir.'),
+    ('Gece elektrik kesilirse nasıl yardım alabilirim?',
+     'Kocaeli Yuvam Elektrik, İzmit ve özellikle Yuvam Akarca, Alikahya ve Yahya Kaptan çevresindeki elektrik arızalarında haftanın her günü 24 saat yerinde servis sunar. Aradığınızda hangi odalarda enerji olmadığını, sigortanın durumunu ve bulunduğunuz mahalleyi belirtmeniz ilk değerlendirmeyi kolaylaştırır. Ziyaret ve müdahale planı sorunun niteliğine ve konuma göre görüşülür; kesin varış süresi vaat edilmez.'),
+    ('Acil tehlike varsa ne yapmalıyım?',
+     'Duman, yangın, elektrik çarpması veya yoğun yanık kokusu gibi belirtilerde tehlikeli alanı terk edin ve 112 Acil Çağrı Merkezinden yardım isteyin. Elektrik panosuna, açık kablolara ya da hasarlı prizlere dokunmayın. Tehlike geçtikten sonra tesisatın profesyonel olarak kontrol edilmesini sağlayın.')
+  ],
+  'cta':'İzmit’te 7/24 elektrik arızası için Yuvam Elektrik’i arayın.'
+},
+{
  'slug':'sigorta-surekli-neden-atar','title':'Elektrik Sigortası Sürekli Neden Atar?','intro':'Tekrarlayan sigorta açmaları yalnızca can sıkıcı değil, incelenmesi gereken bir uyarı olabilir.',
  'sections':[
  ('Sigortanın görevi nedir?', 'Devre kesiciler, belirli aşırı akım ve kısa devre koşullarında devreyi ayırarak kablo ve tesisatın korunmasına yardımcı olur. Kaçak akım röleleri ise farklı bir koruma görevi üstlenir. Bu parçaların işlevleri birbirine karıştırılmamalıdır.'),
