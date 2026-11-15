@@ -40,6 +40,9 @@ jobs:
           assert "fiziksel dükkânda müşteri kabul etmiyoruz" in contact, "Service-area business info missing"
           assert "streetAddress" not in home, "Old private street address in structured data"
           assert "canonical" in home and "canonical" in fault, "Canonical tags missing"
+          gmaps = "https://www.google.com/maps?cid=17157529544399427815"
+          assert gmaps in home and gmaps in contact, "Public Google Business Profile link missing"
+          assert '"hasMap"' in home and '"sameAs"' in home, "LocalBusiness Maps schema missing"
           assert (root / "sitemap.xml").exists(), "Sitemap missing"
           from xml.etree import ElementTree
           logo_svg = (root / "assets/yuvam-elektrik-logo.svg").read_text(encoding="utf-8")
