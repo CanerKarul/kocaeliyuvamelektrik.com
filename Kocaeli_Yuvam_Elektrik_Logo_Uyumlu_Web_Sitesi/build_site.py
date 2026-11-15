@@ -20,6 +20,20 @@ PUBLISHED = bool(PHONE and DOMAIN)
 BRAND = CONFIG.get('isletme_adi','Yuvam Elektrik')
 PHONE_MISSING = not bool(PHONE)
 
+SEO_SERVICE_DESCRIPTIONS = {
+    'elektrik-ariza-tespiti-ve-tamiri': 'İzmit’te elektrik arızası veya tesisat sorunu mu var? Yuvam Elektrik ile Alikahya, Yuvam Akarca ve Yahya Kaptan için servis uygunluğunu görüşün.',
+    'sigorta-ve-kacak-akim-rolesi': 'İzmit’te sigorta sürekli atıyor veya kaçak akım rölesi devreyi kapatıyor mu? Yuvam Elektrik ile güvenli arıza değerlendirmesi için iletişime geçin.',
+    'priz-anahtar-ve-salter-montaji': 'İzmit, Alikahya ve Yuvam Akarca’da priz, anahtar ve şalter montajı veya bağlantı kontrolü için Yuvam Elektrik’e ulaşın.',
+    'avize-armatur-ve-aplik-montaji': 'İzmit’te avize, aplik ve armatür montajı için Yuvam Elektrik’e ulaşın. Alikahya ve Yahya Kaptan için servis uygunluğunu görüşün.',
+    'goruntulu-diafon-ve-interkom': 'İzmit’te görüntülü diafon çalışmıyor mu? Ses, görüntü ve kapı açma arızaları için Yuvam Elektrik ile montaj ve onarım seçeneklerini görüşün.',
+}
+BLOG_RELATED_SERVICE = {
+    'sigorta-surekli-neden-atar': 'sigorta-ve-kacak-akim-rolesi',
+    'priz-isiniyorsa-ne-yapilmali': 'priz-anahtar-ve-salter-montaji',
+    'avize-montajinda-dikkat-edilecekler': 'avize-armatur-ve-aplik-montaji',
+    'goruntulu-diafon-calismiyorsa': 'goruntulu-diafon-ve-interkom',
+}
+
 ICONS={
  'bolt':'<path d="m13 2-3 8H5l6 12 3-8h5L13 2Z"/>',
  'cable':'<path d="M7 13a4 4 0 0 1 4-4h2a4 4 0 0 1 4 4v1a4 4 0 0 1-4 4H9"/><path d="M5 9V4M9 9V4M15 18v3m4-3v3"/>',
@@ -94,6 +108,25 @@ def schema_org(kind='local',service=None):
         return {"@context":"https://schema.org","@type":"Service","name":service['name'],"description":service['lead'],"provider":{k:v for k,v in base.items() if k!='@context'},"areaServed":{"@type":"Place","name":"İzmit, Kocaeli, Türkiye"}}
     return base
 
+def seo_breadcrumbs(relpath, page_title, canonical):
+    """BreadcrumbList uses actual site navigation instead of URL-only labels."""
+    if not (DOMAIN and canonical and relpath):
+        return None
+    steps=[('Ana Sayfa', DOMAIN+'/')]
+    if relpath.startswith('hizmetler/') and relpath != 'hizmetler/':
+        steps.append(('Hizmetler', DOMAIN+'/hizmetler/'))
+    elif relpath.startswith('blog/') and relpath != 'blog/':
+        steps.append(('Blog', DOMAIN+'/blog/'))
+    steps.append((page_title.split(' | ', 1)[0], canonical))
+    return {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        'itemListElement': [
+            {'@type':'ListItem','position':i,'name':name,'item':url}
+            for i,(name,url) in enumerate(steps,start=1)
+        ],
+    }
+
 def make_page(path,title,description,body,active=None,schema=None):
     file=SITE/path
     file.parent.mkdir(parents=True,exist_ok=True)
@@ -101,6 +134,8 @@ def make_page(path,title,description,body,active=None,schema=None):
     prefix='../'*depth
     relpath=str(path).replace('index.html','').replace('\\','/')
     canonical=f'{DOMAIN}/{relpath}' if DOMAIN else None
+    crumb=seo_breadcrumbs(relpath,title,canonical)
+    crumb_json=json.dumps(crumb,ensure_ascii=False).replace('</', '<\\/') if crumb else ''
     head='\n'.join([
        '<!doctype html><html lang="tr"><head><meta charset="utf-8">',
        '<meta name="viewport" content="width=device-width, initial-scale=1">',
@@ -119,6 +154,7 @@ def make_page(path,title,description,body,active=None,schema=None):
        f'<meta property="og:url" content="{e(canonical)}">' if canonical else '',
        f'<link rel="stylesheet" href="{prefix}assets/site.css">',
        f'<script type="application/ld+json">{json.dumps(schema,ensure_ascii=False).replace("</", "<\\/")}</script>' if schema else '',
+       f'<script type="application/ld+json">{crumb_json}</script>' if crumb_json else '',
        '</head><body>'
     ])
     output=head+shared_header(prefix,active)+body.replace('___ROOT___',prefix)+shared_footer(prefix)+'</body></html>'
@@ -154,11 +190,19 @@ def homepage():
     return hero+f'''<section class="section section-white"><div class="container">{section_head('Hızlı çözüm','Hangi konuda elektrikçi arıyorsunuz?','En sık karşılaşılan taleplerden birini seçin ya da bizi doğrudan arayın.')}<div class="issue-grid">{issues}</div></div></section><section class="section"><div class="container">{section_head('Hizmetlerimiz','İzmit’te elektrik işleriniz için tek iletişim noktası.','Arızadan montaja, tesisattan haberleşme sistemlerine kadar sunduğumuz hizmetler.')}{cards(SERVICES[:8])}<div style="margin-top:24px">{btn('Tüm Hizmetleri Gör','___ROOT___hizmetler/','btn-outline',svg='arrow')}</div></div></section><section class="section section-white"><div class="container">{section_head('Nasıl ilerliyoruz?','Telefon edin, ihtiyacınızı birlikte netleştirelim.') }<div class="step-grid">{step_h}</div></div></section><section class="section section-soft"><div class="container about-grid"><div><span class="eyebrow"><span class="dot"></span>YUVAM ELEKTRİK HAKKINDA</span><h2>{e(HC['about_title'])}</h2><p class="lead">{e(HC['about_text'])}</p><div class="check-grid"><div class="check-item"><b>✓</b> Yerel hizmet odağı</div><div class="check-item"><b>✓</b> Farklı elektrik işlerinde destek</div><div class="check-item"><b>✓</b> İşin kapsamını önceden görüşme</div><div class="check-item"><b>✓</b> Telefonla doğrudan iletişim</div></div><a href="___ROOT___hakkimizda/" class="text-link">Hakkımızda daha fazla bilgi {icon('arrow',16)}</a></div><div class="about-panel"><span>YUVAM AKARCA / ALİKAHYA</span><h3>Uzağı aramayın. Önce mahallenizdeki elektrik ustasına sorun.</h3><p>İzmit’te evinize, apartmanınıza veya iş yerinize uygun hizmeti telefonla görüşelim.</p></div></div></section><section class="section"><div class="container">{section_head('Ticari ve kurumsal işler','İş yerinizin elektrik altyapısı için de yanınızdayız.','Fabrika, şantiye, restoran ve diğer ticari işletmelerde pano, bakım, kompanzasyon ve kamera sistemi taleplerinizi değerlendiriyoruz.')}{cards(SERVICES[16:])}</div></section><section class="section section-white"><div class="container">{section_head('Hizmet bölgeleri','Yuvam Akarca ve Alikahya çevresinde yanınızdayız.','Alikahya ve Yahya Kaptan başta olmak üzere İzmit genelinde elektrik arıza, bakım ve montaj hizmetleri sunuyoruz.')}<div class="region-grid">{reg}</div><p class="region-note">İzmit genelinde hizmet veriyoruz. Kocaeli’nin diğer ilçelerindeki işler için konum, kapsam ve servis uygunluğunu telefonda görüşebilirsiniz.</p><a class="text-link" href="___ROOT___hizmet-bolgeleri/">Hizmet alanını incele {icon('arrow',16)}</a></div></section><section class="section section-soft"><div class="container">{section_head('Fiyatlandırma','Elektrik işlerinde fiyat nasıl belirleniyor?')}<p style="max-width:870px;color:#526779">{e(HC['price_text'])}</p>{btn('İşiniz İçin Ön Bilgi Alın',phone_href('___ROOT___'),'btn-primary',svg='phone')}</div></section><section class="section section-white"><div class="container">{section_head('Sık sorulan sorular','Aramadan önce merak edilenler')}{faq_html(FAQS[:6])}<div style="margin-top:20px"><a class="text-link" href="___ROOT___sikca-sorulan-sorular/">Tüm soruları görüntüle {icon('arrow',16)}</a></div></div></section><section class="section"><div class="container">{section_head('Bilgi köşesi','Elektrik hakkında faydalı bilgiler') }<div class="blog-grid">{bcards}</div></div></section><section class="section section-white"><div class="container">{contact_banner()}</div></section>'''
 
 def service_page(s):
+    # Anlamlı konu bağlantıları: kullanıcıyı aynı kategorideki diğer işlere götürür.
+    related=[v for v in SERVICES if v['slug']!=s['slug'] and v['category']==s['category']][:3]
+    if len(related)<3:
+        related += [v for v in SERVICES if v['slug']!=s['slug'] and v not in related][:3-len(related)]
+    related_html='<h2>İlgili elektrik hizmetleri</h2><ul>'+''.join(
+        f'<li><a href="___ROOT___hizmetler/{e(v["slug"])}/">{e(v["name"])}</a></li>'
+        for v in related
+    )+'</ul>' if related else ''
     signals=''.join(f'<li>{e(x)}</li>' for x in s['signals'])
     tasks=''.join(f'<li>{e(x)}</li>' for x in s['tasks'])
     calltxt='Merhaba, '+s['name']+' için İzmit’te hizmet almak istiyorum.'
     aside=f'''<aside class="aside-box"><span class="eyebrow"><span class="dot"></span>DOĞRUDAN İLETİŞİM</span><h3>{e(s['name'])} için arayın</h3><p>İşin yapılacağı mahalleyi ve ihtiyacınızı anlatın. Servis uygunluğunu birlikte görüşelim.</p><div class="aside-phone">{e(VISIBLE_PHONE)}</div>{btn('Telefonla Ara',phone_href('___ROOT___'),svg='phone')}{wa_btn('WhatsApp Mesajı','___ROOT___',calltxt)}<div class="aside-mini">İzmit genelinde hizmet • Kocaeli’nin diğer ilçelerinde servis uygunluğu telefonla teyit edilir.</div></aside>'''
-    return page_heading('İZMİT • YUVAM ELEKTRİK',s['name'],s['lead'])+f'''<section class="section section-white"><div class="container service-layout"><article class="prose"><p class="lead">{e(s['body'])}</p><h2>Hangi durumlarda arayabilirsiniz?</h2><ul class="detail-list">{signals}</ul><h2>Bu hizmet kapsamında neler yapıyoruz?</h2><ul>{tasks}</ul><h2>Yuvam Elektrik ile süreç nasıl ilerliyor?</h2><p>İlk görüşmede bulunduğunuz mahalleyi, yaşadığınız sorunu ve varsa kullanılan ürünün modelini soruyoruz. Yapılacak işin kapsamına göre servis uygunluğunu görüşüyor, gerekli kontrol ve montaj işlemleri için plan oluşturuyoruz. Kullanılacak malzeme veya ek işlem ihtiyacı ortaya çıkarsa uygulama öncesinde bilgi vermeyi hedefliyoruz.</p><div class="info-note"><strong>Güvenlik notu:</strong> {e(s['note'])}</div><h2>İzmit’te {e(s['name'].lower())} için iletişim</h2><p>Yuvam Akarca ve Alikahya Fatih’te bulunan Yuvam Elektrik, Alikahya ve Yahya Kaptan başta olmak üzere İzmit genelinde hizmet verir. Kocaeli’nin diğer ilçelerindeki planlı işler için uygunluğu telefonda görüşebilirsiniz.</p><p><a class="text-link" href="___ROOT___hizmetler/">← Diğer elektrik hizmetlerini görün</a></p></article>{aside}</div></section>'''
+    return page_heading('İZMİT • YUVAM ELEKTRİK',s['name'],s['lead'])+f'''<section class="section section-white"><div class="container service-layout"><article class="prose"><p class="lead">{e(s['body'])}</p><h2>Hangi durumlarda arayabilirsiniz?</h2><ul class="detail-list">{signals}</ul><h2>Bu hizmet kapsamında neler yapıyoruz?</h2><ul>{tasks}</ul><h2>Yuvam Elektrik ile süreç nasıl ilerliyor?</h2><p>İlk görüşmede bulunduğunuz mahalleyi, yaşadığınız sorunu ve varsa kullanılan ürünün modelini soruyoruz. Yapılacak işin kapsamına göre servis uygunluğunu görüşüyor, gerekli kontrol ve montaj işlemleri için plan oluşturuyoruz. Kullanılacak malzeme veya ek işlem ihtiyacı ortaya çıkarsa uygulama öncesinde bilgi vermeyi hedefliyoruz.</p><div class="info-note"><strong>Güvenlik notu:</strong> {e(s['note'])}</div><h2>İzmit’te {e(s['name'].lower())} için iletişim</h2><p>Yuvam Akarca ve Alikahya Fatih’te bulunan Yuvam Elektrik, Alikahya ve Yahya Kaptan başta olmak üzere İzmit genelinde hizmet verir. Kocaeli’nin diğer ilçelerindeki planlı işler için uygunluğu telefonda görüşebilirsiniz.</p>{related_html}<p><a class="text-link" href="___ROOT___hizmetler/">← Diğer elektrik hizmetlerini görün</a></p></article>{aside}</div></section>'''
 
 def other_page():
     about=page_heading('HAKKIMIZDA','Kocaeli Yuvam Elektrik: Elektrik işlerinizde çözüm ortağınız.','Alikahya ve Yahya Kaptan başta olmak üzere İzmit’in tamamında arıza, bakım, montaj ve taahhüt hizmetleri.')+f'''<section class="section section-white"><div class="container simple-page prose"><h2>Yuvam Elektrik hakkında</h2><p>{e(HC['about_text'])}</p><p>Elektrik arızaları, deneyim ve titiz çalışma gerektirir. Yuvam Elektrik olarak iş güvenliğini ve doğru uygulamayı önemser; sorunu dinleyip uygun çözümün kapsamını anlaşılır biçimde aktarmaya çalışırız. Anahtar-priz değişiminden bina içi tesisat yenilemeye, avize ve LED aydınlatmadan sigorta ve pano işlerine kadar farklı ihtiyaçlara cevap veririz.</p><h2>Konut, apartman ve ticari işletmelere hizmet</h2><p>Ev ve apartmanlardaki günlük arızaların yanında fabrika, iş yeri, şantiye, restoran ve eğlence mekânları gibi ticari alanlarda elektrik altyapısı, dağıtım ve kompanzasyon panosu, enerji besleme hatları, kamera güvenlik sistemleri, kontrol, bakım ve onarım taleplerini değerlendiririz. İşin kapsamına ve gerekli teknik yetkilere göre uygulama planı oluştururuz.</p><h2>Hizmet anlayışımız</h2><p>Hedefimiz, müşteri memnuniyetini ön planda tutarak ihtiyaçlara uygun, güvenli ve sürdürülebilir çözümler üretmek. Teknolojideki gelişmeleri ve güncel uygulamaları takip ederek, malzeme seçimini işin teknik gerekliliklerine uygun yapmaya özen gösteriyoruz.</p><h2>Neredeyiz?</h2><p><strong>Alikahya Fatih Mahallesi, Yuvam Akarca Toplu Konutları, İzmit / Kocaeli</strong> bölgesindeyiz. Alikahya ve Yahya Kaptan başta olmak üzere İzmit’in tamamında servis hizmeti sunuyoruz. İzmit dışındaki Kocaeli taleplerini de işin kapsamı, konum ve planlamaya göre değerlendirebiliyoruz.</p><h2>Doğrudan iletişim</h2><p><strong>Bayram Canseven — Yuvam Elektrik</strong><br>Telefon: <a href="{e(phone_href('___ROOT___'))}">{e(VISIBLE_PHONE)}</a></p></div></section><section class="section"><div class="container">{contact_banner()}</div></section>'''
@@ -228,7 +272,7 @@ def build():
     serv_body=page_heading('HİZMETLERİMİZ','Elektrik arızasından montaja, aradığınız hizmet burada.','İzmit genelinde 7/24 elektrik arıza, avize, priz, kombi ve klima elektrik bağlantıları, tesisat, pano ve ticari elektrik hizmetleri.')+f'''<section class="section section-white"><div class="container"><div class="service-filter"><label class="sr-only" for="serviceFilter">Hizmetlerde ara</label><input id="serviceFilter" type="search" data-service-filter placeholder="Örn. priz, avize, uydu, sigorta..." autocomplete="off"><small>Hizmeti yazarak hızlıca bulun.</small></div>{cards(SERVICES[:16])}<div style="margin:35px 0 20px">{section_head('Kurumsal hizmetler','Ticari işletmeler için elektrik çözümlerimiz')}</div>{cards(SERVICES[16:])}<p class="no-result" data-no-results>Bu aramayla eşleşen hizmet bulunamadı. Yine de ihtiyacınız için bizi arayabilirsiniz.</p></div></section><section class="section"><div class="container">{contact_banner()}</div></section>'''
     paths.append(make_page(Path('hizmetler/index.html'),'Elektrik Hizmetleri | İzmit – Yuvam Elektrik','İzmit’te elektrik arızası, priz ve avize montajı, elektrik panosu, sigorta, diafon, uydu, kamera ve kablolama hizmetlerini inceleyin.',serv_body,'services'))
     for s in SERVICES:
-        paths.append(make_page(Path('hizmetler')/s['slug']/'index.html',s['name']+' | İzmit – Yuvam Elektrik',s['lead'],service_page(s),'services',schema_org('service',s)))
+        paths.append(make_page(Path('hizmetler')/s['slug']/'index.html',s['name']+' | İzmit – Yuvam Elektrik',SEO_SERVICE_DESCRIPTIONS.get(s['slug'],s['lead']),service_page(s),'services',schema_org('service',s)))
     about,regions,contact,privacy=other_page()
     paths.append(make_page(Path('hakkimizda/index.html'),'Hakkımızda | İzmit Yuvam Elektrik','Yuvam Elektrik İzmit Alikahya’da. Bayram Canseven: 0532 711 36 77. Alikahya ve Yahya Kaptan başta olmak üzere İzmit genelinde elektrik hizmetleri.',about,'about'))
     paths.append(make_page(Path('hizmet-bolgeleri/index.html'),'Hizmet Bölgeleri | Yuvam Akarca ve Alikahya Elektrikçi','Yuvam Elektrik Alikahya ve Yahya Kaptan başta olmak üzere İzmit’in tamamında hizmet sunar; Kocaeli genelinde planlı ticari işler için arayın.',regions,'regions'))
@@ -241,7 +285,9 @@ def build():
     paths.append(make_page(Path('blog/index.html'),'Elektrik Rehberi | İzmit Yuvam Elektrik','Sigorta arızası, priz ısınması, avize montajı ve diafon sorunları için Yuvam Elektrik blog yazılarını inceleyin.',blog,'blog'))
     for b in BLOGS:
         parts=''.join(f'<h2>{e(h)}</h2><p>{e(p)}</p>' for h,p in b['sections'])
-        blogbody=page_heading('YUVAM ELEKTRİK • BİLGİ KÖŞESİ',b['title'],b['intro'])+f'<section class="section section-white"><div class="container service-layout"><article class="prose"><p class="lead">{e(b["intro"])}</p>{parts}<div class="info-note">Bu yazı genel bilgilendirme amaçlıdır. Elektrik tesisatına yetkisiz müdahale etmeyin; güvenlik riski varsa ilgili acil yardım kanallarına başvurun.</div><p><a class="text-link" href="___ROOT___blog/">← Diğer faydalı yazılara dön</a></p></article><aside class="aside-box"><h3>{e(b["cta"])}</h3><p>Yuvam Akarca ve İzmit yakın çevresindeki talepler için bize ulaşın.</p>{btn('Telefonla Ara',phone_href('___ROOT___'),svg='phone')}{wa_btn('WhatsApp','___ROOT___')}</aside></div></section>'
+        related_service=next((v for v in SERVICES if v['slug']==BLOG_RELATED_SERVICE.get(b['slug'])),None)
+        related_html=(f'<h2>Bu konuda yerinde hizmet</h2><p>İzmit’te bu konuyla ilgili profesyonel destek için <a href="___ROOT___hizmetler/{e(related_service["slug"])}/">{e(related_service["name"])}</a> sayfamızı inceleyebilirsiniz.</p>' if related_service else '')
+        blogbody=page_heading('YUVAM ELEKTRİK • BİLGİ KÖŞESİ',b['title'],b['intro'])+f'<section class="section section-white"><div class="container service-layout"><article class="prose"><p class="lead">{e(b["intro"])}</p>{parts}<div class="info-note">Bu yazı genel bilgilendirme amaçlıdır. Elektrik tesisatına yetkisiz müdahale etmeyin; güvenlik riski varsa ilgili acil yardım kanallarına başvurun.</div>{related_html}<p><a class="text-link" href="___ROOT___blog/">← Diğer faydalı yazılara dön</a></p></article><aside class="aside-box"><h3>{e(b["cta"])}</h3><p>Yuvam Akarca ve İzmit yakın çevresindeki talepler için bize ulaşın.</p>{btn('Telefonla Ara',phone_href('___ROOT___'),svg='phone')}{wa_btn('WhatsApp','___ROOT___')}</aside></div></section>'
         paths.append(make_page(Path('blog')/b['slug']/'index.html',b['title']+' | Yuvam Elektrik',b['intro'],blogbody,'blog'))
     if PUBLISHED:
         locs=''.join(f'  <url><loc>{xml_escape(DOMAIN+"/"+p.replace("index.html", ""))}</loc></url>\n' for p in paths)
