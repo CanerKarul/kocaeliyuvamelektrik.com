@@ -22,14 +22,14 @@ jobs:
           python3 -m py_compile build_site.py content_data.py
           python3 build_site.py
 
-      - name: Validate 31 pages, SEO data, consent analytics
+      - name: Validate 32 pages, SEO data, consent analytics
         run: |
           python3 - <<'PY'
           from pathlib import Path
           import json, re
           root = Path('Kocaeli_Yuvam_Elektrik_Logo_Uyumlu_Web_Sitesi/site')
           pages = sorted(root.rglob('index.html'))
-          assert len(pages) == 31, f'Expected 31 pages, got {len(pages)}'
+          assert len(pages) == 32, f'Expected 32 pages, got {len(pages)}'
           titles = []
           for page in pages:
               html = page.read_text(encoding='utf-8')
@@ -51,7 +51,7 @@ jobs:
           assert len(set(titles)) == len(titles), 'Duplicate page titles'
           js = (root/'assets/site.js').read_text(encoding='utf-8')
           assert 'G-7XXDVG2JWK' in js and 'phone_click' in js, 'GA4 code missing'
-          assert len(re.findall(r'<loc>', (root/'sitemap.xml').read_text(encoding='utf-8'))) == 31
+          assert len(re.findall(r'<loc>', (root/'sitemap.xml').read_text(encoding='utf-8'))) == len(pages), 'Sitemap and generated page counts differ'
           assert (root/'CNAME').exists(), 'Pages custom domain missing'
-          print('PASS: 31 pages, unique titles, breadcrumbs, internal links, sitemap, GA4 and CNAME')
+          print('PASS: 32 pages, unique titles, breadcrumbs, internal links, sitemap, GA4 and CNAME')
           PY
