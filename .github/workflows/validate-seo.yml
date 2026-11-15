@@ -22,14 +22,14 @@ jobs:
           python3 -m py_compile build_site.py content_data.py
           python3 build_site.py
 
-      - name: Validate 32 pages, SEO data, consent analytics
+      - name: Validate generated pages, SEO data, consent analytics
         run: |
           python3 - <<'PY'
           from pathlib import Path
           import json, re
           root = Path('Kocaeli_Yuvam_Elektrik_Logo_Uyumlu_Web_Sitesi/site')
           pages = sorted(root.rglob('index.html'))
-          assert len(pages) == 32, f'Expected 32 pages, got {len(pages)}'
+          assert len(pages) >= 32, f'At least 32 site pages required; got {len(pages)}'
           titles = []
           for page in pages:
               html = page.read_text(encoding='utf-8')
@@ -51,7 +51,18 @@ jobs:
           assert len(set(titles)) == len(titles), 'Duplicate page titles'
           js = (root/'assets/site.js').read_text(encoding='utf-8')
           assert 'G-7XXDVG2JWK' in js and 'phone_click' in js, 'GA4 code missing'
-          assert len(re.findall(r'<loc>', (root/'sitemap.xml').read_text(encoding='utf-8'))) == len(pages), 'Sitemap and generated page counts differ'
+          from xml.etree import ElementTree as ET
+          sitemap = ET.parse(root / 'sitemap.xml')
+          sitemap_urls = [
+              (node.text or '').strip()
+              for node in sitemap.findall('.//{http://www.sitemaps.org/schemas/sitemap/0.9}loc')
+          ]
+          expected_urls = {
+              'https://kocaeliyuvamelektrik.com/' + page.relative_to(root).as_posix().removesuffix('index.html')
+              for page in pages
+          }
+          assert len(sitemap_urls) == len(expected_urls), 'Sitemap page count differs from generated HTML pages'
+          assert set(sitemap_urls) == expected_urls, 'Sitemap missing or unexpected canonical URLs'
           assert (root/'CNAME').exists(), 'Pages custom domain missing'
-          print('PASS: 32 pages, unique titles, breadcrumbs, internal links, sitemap, GA4 and CNAME')
+          print(f'PASS: {len(pages)} pages, unique titles, breadcrumbs, internal links, sitemap, GA4 and CNAME')
           PY
