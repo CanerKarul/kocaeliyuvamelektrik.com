@@ -226,9 +226,9 @@ def _new(slug,name,short,icon,category,lead,body,signals,tasks,note):
 
 SERVICES = [
     _reuse('elektrik-ariza-tespiti-ve-tamiri',
-        name='7/24 Elektrik Arıza Çözümleri',
-        short='İzmit’te elektrik kesintisi, sigorta atması ve beklenmedik tesisat arızalarında 7/24 arıza talebi iletin.',
-        lead='Yuvam Elektrik, İzmit genelinde elektrik arızaları için 7/24 telefonla talep alır; yerinde müdahale planı konum ve müsaitliğe göre belirlenir.',
+        name='Elektrik Arıza Tespiti ve Tamiri',
+        short='İzmit’te elektrik kesintisi, sigorta atması, priz ve tesisat sorunlarında yerinde arıza tespiti ve onarım.',
+        lead='İzmit, Alikahya ve Yuvam Akarca’da ev ve iş yerlerine elektrik arıza tespiti ve tamiri. 7/24 telefonla ulaşın; servis uygunluğu görüşmede belirlenir.',
         body='Evde, apartmanda veya iş yerinde ani elektrik kesintisi, atan sigorta, çalışmayan priz, yanık kokusu veya aydınlatma sorunu mu yaşıyorsunuz? Yuvam Elektrik’in 0532 711 36 77 numaralı hattını arayarak arızayı bildirebilirsiniz. Önce sorunun kapsamı ve adresiniz değerlendirilir; ardından müdahale uygunluğu hakkında bilgi verilir. Elektrik arızalarında güvenlik önceliğimizdir: tehlikeli tesisata müdahale etmeyin.',
         note='Duman, yangın veya elektrik çarpması riski varsa alandan uzaklaşın, 112’yi arayın. Gaz kokusu varsa elektrik anahtarlarına dokunmayın ve güvenli alandan gaz acil hattını arayın.'),
     _new('genel-elektrik-tamirleri','Genel Tamirler',
@@ -331,7 +331,7 @@ SERVICES = [
 ]
 
 REGIONS = [
- ('Yuvam Akarca','İşletmenin bulunduğu bölge; arıza ve montaj hizmetlerinde öncelikli konum.'),
+ ('Yuvam Akarca','Ev ve iş yerlerine yerinde elektrik arıza, bakım ve montaj servisimizin öncelikli bölgesi.'),
  ('Alikahya Fatih','Yuvam Akarca Toplu Konutları ve çevresinde elektrik hizmetleri.'),
  ('Alikahya','Alikahya merkez ve mahallelerinde elektrik arıza ve montaj işleri.'),
  ('Yahya Kaptan','Konut, apartman ve iş yerlerinde elektrik bakım ve montaj.'),
@@ -342,9 +342,10 @@ REGIONS = [
 ]
 
 FAQS = [
- ('Yuvam Elektrik hangi bölgelere hizmet veriyor?', 'Merkezimiz İzmit Alikahya Fatih Mahallesi, Yuvam Akarca Toplu Konutları bölgesindedir. Alikahya ve Yahya Kaptan başta olmak üzere İzmit’in tamamına servis hizmeti sunuyoruz. Kocaeli’nin diğer ilçelerindeki işler için konum, işin türü ve uygunluk telefonda görüşülür.'),
- ('7/24 elektrik arızası için arayabilir miyim?', 'Evet. Yuvam Elektrik’in 0532 711 36 77 numaralı hattından 7/24 elektrik arıza talebinizi iletebilirsiniz. Yerinde müdahalenin zamanı, konum ve ekip müsaitliğine göre görüşmede netleşir.'),
+ ('Yuvam Elektrik hangi bölgelere hizmet veriyor?', 'İzmit’te Yuvam Akarca, Alikahya ve Yahya Kaptan başta olmak üzere ev, apartman ve iş yerlerine yerinde elektrik servisi sunuyoruz. Kocaeli’nin diğer ilçelerindeki talepler için konum ve servis uygunluğunu telefonda görüşüyoruz.'),
+ ('7/24 elektrik arızası için arayabilir miyim?', 'Evet. 0532 711 36 77 numarasından 7/24 telefonla ulaşabilirsiniz. Planlı işler için servis saatlerimiz 09.30–18.30’dur. Gece acil arızalarda müdahale imkânı, konum ve servis uygunluğuna göre görüşmede netleşir.'),
  ('Telefon numaranız nedir?', 'Bayram Canseven – Yuvam Elektrik: 0532 711 36 77. Acil elektrik arızası, bakım, montaj ve keşif talepleriniz için arayabilirsiniz.'),
+ ('Dükkâna gelerek hizmet alabilir miyim?', 'Hayır. Artık fiziksel dükkânda müşteri kabul etmiyoruz. Elektrik arıza, bakım ve montaj hizmetlerini evinizde veya iş yerinizde, randevu ve servis uygunluğuna göre sunuyoruz.'),
  ('Priz değişimi, avize ve LED montajı yapıyor musunuz?', 'Evet. Priz, anahtar, şalter, avize, aydınlatma armatürü, LED ve dış mekân aydınlatma montajı hizmetlerimiz arasındadır.'),
  ('Kombi ve klima ile ilgili hangi işleri yapıyorsunuz?', 'Kombi ve klima cihazlarının elektrik besleme hattı ve bağlantı ihtiyaçları için destek veriyoruz. Doğalgaz bağlantısı, baca, soğutucu akışkan devresi ve ilgili cihaz devreye alma işleri yetkili servis kapsamındadır.'),
  ('TV ünitesi ve uydu alıcısı kuruyor musunuz?', 'Evet. Uygun duvar askı aparatı ve TV bağlantıları, uydu alıcısı kurulumu, uydu anten kontrolü ve kablo bağlantıları için arayabilirsiniz. Mobilya imalatı veya dekorasyon hizmeti sunmuyoruz.'),
@@ -355,10 +356,10 @@ FAQS = [
 ]
 
 HOMEPAGE_SECTION_COPY = {
- 'hero_eyebrow':'7/24 ELEKTRİK ARIZA • İZMİT • KOCAELİ',
- 'hero_title':'İzmit’te elektrik arızası mı var? Yuvam Elektrik’i hemen arayın.',
- 'hero_text':'Alikahya, Yuvam Akarca ve Yahya Kaptan başta olmak üzere İzmit genelinde 7/24 elektrik arıza talepleri, sigorta ve pano tamiri, priz ve avize montajı, tesisat yenileme ve diğer elektrik işleriniz için Bayram Canseven’e doğrudan ulaşın.',
+ 'hero_eyebrow':'İZMİT • ALİKAHYA • YUVAM AKARCA',
+ 'hero_title':'İzmit’te elektrikçi mi arıyorsunuz? Evinize ve iş yerinize geliyoruz.',
+ 'hero_text':'Kocaeli Yuvam Elektrik, İzmit, Alikahya, Yuvam Akarca ve Yahya Kaptan çevresinde ev ve iş yerlerine yerinde servis sunar. Elektrik arızası, tesisat bakımı, sigorta, priz ve avize montajı için 7/24 telefonla ulaşabilirsiniz; planlı işler 09.30–18.30 arasında randevuyla yapılır.',
  'about_title':'İzmit’te evinizin ve iş yerinizin elektrik çözüm ortağı.',
- 'about_text':'Yuvam Elektrik, Kocaeli İzmit’te Alikahya Fatih Mahallesi, Yuvam Akarca Toplu Konutları bölgesinde faaliyet gösterir. Alikahya ve Yahya Kaptan başta olmak üzere İzmit genelinde elektrik arıza, bakım, onarım, montaj ve taahhüt hizmetleri sunar. Güvenli uygulamayı, doğru arıza değerlendirmesini ve ihtiyaçlara uygun çözümleri esas alır. Konutların yanı sıra fabrika, iş yeri, şantiye, restoran ve diğer ticari alanlarda elektrik tesisatı, pano, kompanzasyon ve güvenlik sistemi taleplerini kapsamına göre değerlendirir.',
+ 'about_text':'Kocaeli Yuvam Elektrik, yıllardır İzmit ve çevresine hizmet veren yerel bir elektrik işletmesidir. Yuvam Akarca, Alikahya ve Yahya Kaptan başta olmak üzere ev, apartman ve iş yerlerine adresinde servis sunar; dükkânda müşteri kabul etmez. Elektrik arıza, bakım, tesisat, montaj, pano ve uygun kapsamlı ticari işler için önce ihtiyacı dinler, sonra hizmet ve randevu planını netleştirir.',
  'price_text':'Elektrik arıza ve montaj hizmetlerinde ücret; arızanın niteliği, kullanılacak malzemeler, tesisatın mevcut durumu ve işin kapsamına göre değişir. 0532 711 36 77 numarasını arayarak ön bilgi alabilir, gerekli durumlarda yerinde inceleme sonrası net teklif isteyebilirsiniz.'
 }
