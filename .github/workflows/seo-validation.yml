@@ -33,13 +33,25 @@ jobs:
           assert len(list(root.rglob("index.html"))) >= 31, "Expected site pages missing"
           assert "İzmit Elektrikçi | Yerinde Servis" in home, "Homepage SEO title missing"
           assert "Evinize ve iş yerinize geliyoruz." in home, "On-site service promise missing"
-          assert "7/24 telefonla ulaşabilirsiniz" in home, "24/7 contact distinction missing"
-          assert "09.30–18.30" in home, "Planned service hours missing"
-          assert "Pazar 12.00–17.00" in home, "Sunday 12-17 information missing from home"
-          assert "Pazar 12.00–17.00" in fault, "Sunday 12-17 information missing from electrical fault page"
-          assert "Pazar 12.00–17.00" in contact, "Sunday hours missing from contact page"
-          assert '"dayOfWeek": "Sunday"' in home, "Sunday hours absent from LocalBusiness schema"
-          assert '"opens": "12:00", "closes": "17:00"' in home, "Sunday 12-17 openingHoursSpecification missing"
+          assert "24 saat" in home and "7/24" in home, "24-hour on-site service missing from homepage"
+          assert "24 saat" in fault and "7/24" in fault, "24-hour service missing from fault page"
+          assert "Her gün 24 saat açık" in contact, "24-hour working hours missing from contact"
+          import json
+          import re
+          structured = [
+              json.loads(x) for x in re.findall(
+                  r'<script type="application/ld\+json">(.*?)</script>',
+                  home, re.DOTALL
+              )
+          ]
+          business = next(x for x in structured if x.get("@type") == "Electrician")
+          specs = business["openingHoursSpecification"]
+          assert len(specs) == 1, "Expected one all-week opening hours spec"
+          spec = specs[0]
+          assert set(spec["dayOfWeek"]) == {"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"}, "All seven days not covered"
+          assert spec["opens"] == "00:00" and spec["closes"] == "23:59", "All-day opening hours incorrect"
+          for legacy in ["09.30–18.30","12.00–17.00","09:30","18:30","12:00","17:00"]:
+              assert legacy not in home and legacy not in fault and legacy not in contact, "Outdated working hours: " + legacy
           assert "Elektrik Arıza Tespiti ve Tamiri" in fault, "Fault landing page missing"
           assert "Gece acil elektrik arızasında" in fault, "Emergency explanation missing"
           assert "fiziksel dükkânda müşteri kabul etmiyoruz" in contact, "Service-area business info missing"
