@@ -343,7 +343,7 @@ REGIONS = [
 
 FAQS = [
  ('Yuvam Elektrik hangi bölgelere hizmet veriyor?', 'İzmit’te Yuvam Akarca, Alikahya ve Yahya Kaptan başta olmak üzere ev, apartman ve iş yerlerine yerinde elektrik servisi sunuyoruz. Kocaeli’nin diğer ilçelerindeki talepler için konum ve servis uygunluğunu telefonda görüşüyoruz.'),
- ('7/24 elektrik arızası için arayabilir miyim?', 'Evet. 0532 711 36 77 numarasından 7/24 telefonla ulaşabilirsiniz. Planlı işler için servis saatlerimiz 09.30–18.30’dur. Gece acil arızalarda müdahale imkânı, konum ve servis uygunluğuna göre görüşmede netleşir.'),
+ ('7/24 elektrik arızası için arayabilir miyim?', 'Evet. 0532 711 36 77 numarasından 7/24 telefonla ulaşabilirsiniz. Planlı servis saatlerimiz Pazartesi–Cumartesi 09.30–18.30, Pazar 12.00–17.00’dir. Gece acil arızalarda müdahale imkânı, konum ve servis uygunluğuna göre görüşmede netleşir.'),
  ('Telefon numaranız nedir?', 'Bayram Canseven – Yuvam Elektrik: 0532 711 36 77. Acil elektrik arızası, bakım, montaj ve keşif talepleriniz için arayabilirsiniz.'),
  ('Dükkâna gelerek hizmet alabilir miyim?', 'Hayır. Artık fiziksel dükkânda müşteri kabul etmiyoruz. Elektrik arıza, bakım ve montaj hizmetlerini evinizde veya iş yerinizde, randevu ve servis uygunluğuna göre sunuyoruz.'),
  ('Priz değişimi, avize ve LED montajı yapıyor musunuz?', 'Evet. Priz, anahtar, şalter, avize, aydınlatma armatürü, LED ve dış mekân aydınlatma montajı hizmetlerimiz arasındadır.'),
@@ -358,7 +358,7 @@ FAQS = [
 HOMEPAGE_SECTION_COPY = {
  'hero_eyebrow':'İZMİT • ALİKAHYA • YUVAM AKARCA',
  'hero_title':'İzmit’te elektrikçi mi arıyorsunuz? Evinize ve iş yerinize geliyoruz.',
- 'hero_text':'Kocaeli Yuvam Elektrik, İzmit, Alikahya, Yuvam Akarca ve Yahya Kaptan çevresinde ev ve iş yerlerine yerinde servis sunar. Elektrik arızası, tesisat bakımı, sigorta, priz ve avize montajı için 7/24 telefonla ulaşabilirsiniz; planlı işler 09.30–18.30 arasında randevuyla yapılır.',
+ 'hero_text':'Kocaeli Yuvam Elektrik, İzmit, Alikahya, Yuvam Akarca ve Yahya Kaptan çevresinde ev ve iş yerlerine yerinde servis sunar. Elektrik arızası, tesisat bakımı, sigorta, priz ve avize montajı için 7/24 telefonla ulaşabilirsiniz; planlı işler Pazartesi–Cumartesi 09.30–18.30, Pazar 12.00–17.00 saatlerinde randevuyla yapılır.',
  'about_title':'İzmit’te evinizin ve iş yerinizin elektrik çözüm ortağı.',
  'about_text':'Kocaeli Yuvam Elektrik, yıllardır İzmit ve çevresine hizmet veren yerel bir elektrik işletmesidir. Yuvam Akarca, Alikahya ve Yahya Kaptan başta olmak üzere ev, apartman ve iş yerlerine adresinde servis sunar; dükkânda müşteri kabul etmez. Elektrik arıza, bakım, tesisat, montaj, pano ve uygun kapsamlı ticari işler için önce ihtiyacı dinler, sonra hizmet ve randevu planını netleştirir.',
  'price_text':'Elektrik arıza ve montaj hizmetlerinde ücret; arızanın niteliği, kullanılacak malzemeler, tesisatın mevcut durumu ve işin kapsamına göre değişir. 0532 711 36 77 numarasını arayarak ön bilgi alabilir, gerekli durumlarda yerinde inceleme sonrası net teklif isteyebilirsiniz.'
