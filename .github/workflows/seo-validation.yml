@@ -1,0 +1,46 @@
+name: Validate site generator and local SEO
+
+on:
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build and validate key landing pages
+        shell: bash
+        run: |
+          cd Kocaeli_Yuvam_Elektrik_Logo_Uyumlu_Web_Sitesi
+          python3 -m py_compile build_site.py content_data.py
+          python3 build_site.py
+          python3 - <<'PY'
+          from pathlib import Path
+          from html import unescape
+
+          root = Path("site")
+          home = unescape((root / "index.html").read_text(encoding="utf-8"))
+          fault = unescape((root / "hizmetler/elektrik-ariza-tespiti-ve-tamiri/index.html").read_text(encoding="utf-8"))
+          contact = unescape((root / "iletisim/index.html").read_text(encoding="utf-8"))
+
+          assert len(list(root.rglob("index.html"))) >= 31, "Expected site pages missing"
+          assert "İzmit Elektrikçi | Yerinde Servis" in home, "Homepage SEO title missing"
+          assert "Evinize ve iş yerinize geliyoruz." in home, "On-site service promise missing"
+          assert "7/24 telefonla ulaşabilirsiniz" in home, "24/7 contact distinction missing"
+          assert "09.30–18.30" in home, "Planned service hours missing"
+          assert "Elektrik Arıza Tespiti ve Tamiri" in fault, "Fault landing page missing"
+          assert "Acil elektrik arızasında" in fault, "Emergency explanation missing"
+          assert "fiziksel dükkânda müşteri kabul etmiyoruz" in contact, "Service-area business info missing"
+          assert "streetAddress" not in home, "Old private street address in structured data"
+          assert "canonical" in home and "canonical" in fault, "Canonical tags missing"
+          assert (root / "sitemap.xml").exists(), "Sitemap missing"
+
+          print("OK: generated pages, truthful availability, hidden address and SEO metadata")
+          PY
