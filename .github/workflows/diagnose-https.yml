@@ -1,0 +1,64 @@
+name: Diagnose domain HTTPS and GitHub Pages
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/diagnose-https.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Inspect GitHub Pages certificate and enforced HTTPS
+        env:
+          GH_REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set +e
+          status=$(curl -sS --connect-timeout 10 --max-time 25             -H "Accept: application/vnd.github+json"             -H "Authorization: Bearer $GH_TOKEN"             -o /tmp/pages.json -w "%{http_code}"             "https://api.github.com/repos/$GH_REPO/pages")
+          echo "GitHub Pages API HTTP status: $status"
+          echo "### GitHub Pages HTTPS status" >> "$GITHUB_STEP_SUMMARY"
+          if [ "$status" = "200" ]; then
+            python3 - <<'PY' | tee -a "$GITHUB_STEP_SUMMARY"
+          import json
+          d=json.load(open('/tmp/pages.json',encoding='utf-8'))
+          c=d.get('https_certificate') or {}
+          print("- Custom domain:",d.get('cname'))
+          print("- Published URL:",d.get('html_url'))
+          print("- HTTPS enforced:",d.get('https_enforced'))
+          print("- Certificate state:",c.get('state'))
+          print("- Certificate description:",c.get('description'))
+          print("- Certificate domains:",", ".join(c.get('domains') or []))
+          print("- Certificate expires:",c.get('expires_at'))
+          PY
+          else
+            echo "- GitHub Pages settings could not be read (HTTP $status); this workflow does not change any settings." | tee -a "$GITHUB_STEP_SUMMARY"
+            head -c 300 /tmp/pages.json; echo
+          fi
+
+      - name: Inspect DNS records and HTTP/HTTPS redirect behavior
+        shell: bash
+        run: |
+          set +e
+          for host in kocaeliyuvamelektrik.com www.kocaeliyuvamelektrik.com; do
+            echo "### DNS and HTTPS: $host" >> "$GITHUB_STEP_SUMMARY"
+            echo "$host DNS A records:"
+            dig +time=5 +tries=1 +short A "$host"
+            echo "$host DNS AAAA records:"
+            dig +time=5 +tries=1 +short AAAA "$host"
+            echo "$host DNS CNAME records:"
+            dig +time=5 +tries=1 +short CNAME "$host"
+            for protocol in http https; do
+              echo "Checking $protocol://$host"
+              curl -sS -L -I --connect-timeout 10 --max-time 20 -o /dev/null                 -w "$protocol: HTTP %{http_code}, target %{url_effective}, redirects %{num_redirects}, TLS check %{ssl_verify_result}\n"                 "$protocol://$host/" || true
+            done
+          done
+          echo "- Note: HTTP requests should redirect to HTTPS; the HTTPS certificate must be valid for the requested hostname." >> "$GITHUB_STEP_SUMMARY"
