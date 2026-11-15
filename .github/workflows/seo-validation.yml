@@ -41,6 +41,13 @@ jobs:
           assert "streetAddress" not in home, "Old private street address in structured data"
           assert "canonical" in home and "canonical" in fault, "Canonical tags missing"
           assert (root / "sitemap.xml").exists(), "Sitemap missing"
+          from xml.etree import ElementTree
+          logo_svg = (root / "assets/yuvam-elektrik-logo.svg").read_text(encoding="utf-8")
+          ElementTree.fromstring(logo_svg)
+          assert 'M747,942 L797,942 C820,942' in logo_svg, "Corrected R glyph missing"
+          assert 'id="banner" fill="#CB0109" d=' in logo_svg, "Solid red banner missing"
+          assert 'yuvam-elektrik-logo.svg?v=20261115-r2' in home, "Header/hero logo cache version missing"
+          assert 'yuvam-elektrik-logo.svg?v=20261115-r2' in fault, "Inner page logo cache version missing"
 
           print("OK: generated pages, truthful availability, hidden address and SEO metadata")
           PY
