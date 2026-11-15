@@ -31,7 +31,7 @@ jobs:
           contact = unescape((root / "iletisim/index.html").read_text(encoding="utf-8"))
 
           assert len(list(root.rglob("index.html"))) >= 31, "Expected site pages missing"
-          assert "İzmit Elektrikçi | Yerinde Servis" in home, "Homepage SEO title missing"
+          assert "İzmit Elektrikçi | 7/24 Elektrik Arıza" in home, "Homepage local-intent title missing"
           assert "Evinize ve iş yerinize geliyoruz." in home, "On-site service promise missing"
           assert "24 saat" in home and "7/24" in home, "24-hour on-site service missing from homepage"
           assert "24 saat" in fault and "7/24" in fault, "24-hour service missing from fault page"
@@ -52,6 +52,18 @@ jobs:
           assert spec["opens"] == "00:00" and spec["closes"] == "23:59", "All-day opening hours incorrect"
           for legacy in ["09.30–18.30","12.00–17.00","09:30","18:30","12:00","17:00"]:
               assert legacy not in home and legacy not in fault and legacy not in contact, "Outdated working hours: " + legacy
+          article_path = root / "blog/komsularda-elektrik-var-evde-yok/index.html"
+          assert article_path.exists(), "New power outage guide missing"
+          article = unescape(article_path.read_text(encoding="utf-8"))
+          assert "Komşularda Elektrik Var, Evde Yok" in article, "Guide title missing"
+          assert "Günün her saati" not in article or "24 saat" in article, "Guide availability claim inconsistent"
+          assert "İzmit Elektrik Arıza Tamiri | Yuvam Elektrik" in fault, "Local service SEO title missing"
+          assert "komsularda-elektrik-var-evde-yok/" in home and "komsularda-elektrik-var-evde-yok/" in fault, "Top landing pages need links to the guide"
+          assert "../../hizmetler/elektrik-ariza-tespiti-ve-tamiri/" in article, "Guide must link to the repair service"
+          sitemap = (root / "sitemap.xml").read_text(encoding="utf-8")
+          assert "/blog/komsularda-elektrik-var-evde-yok/" in sitemap, "New article missing from sitemap"
+          assert "<h2>Elektrik arıza, bakım ve montaj hizmetleri</h2>" in (root / "hizmetler/index.html").read_text(encoding="utf-8"), "Services section heading missing"
+          assert "<h2>Elektrik arızası ve güvenli kullanım rehberleri</h2>" in (root / "blog/index.html").read_text(encoding="utf-8"), "Blog section heading missing"
           assert "Elektrik Arıza Tespiti ve Tamiri" in fault, "Fault landing page missing"
           assert "Gece acil elektrik arızasında" in fault, "Emergency explanation missing"
           assert "fiziksel dükkânda müşteri kabul etmiyoruz" in contact, "Service-area business info missing"
