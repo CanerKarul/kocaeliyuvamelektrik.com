@@ -1,0 +1,57 @@
+name: Validate SEO and site build
+on:
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  seo-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build site from Python source
+        run: |
+          cd Kocaeli_Yuvam_Elektrik_Logo_Uyumlu_Web_Sitesi
+          python3 -m py_compile build_site.py content_data.py
+          python3 build_site.py
+
+      - name: Validate 31 pages, SEO data, consent analytics
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json, re
+          root = Path('Kocaeli_Yuvam_Elektrik_Logo_Uyumlu_Web_Sitesi/site')
+          pages = sorted(root.rglob('index.html'))
+          assert len(pages) == 31, f'Expected 31 pages, got {len(pages)}'
+          titles = []
+          for page in pages:
+              html = page.read_text(encoding='utf-8')
+              assert html.count('<h1') == 1, page
+              assert 'rel="canonical"' in html, page
+              assert 'content="noindex' not in html, page
+              title = re.search(r'<title>(.*?)</title>', html, re.S)
+              assert title, page
+              titles.append(title.group(1))
+              data = [json.loads(x) for x in re.findall(
+                  r'<script type="application/ld\+json">(.*?)</script>', html, re.S
+              )]
+              if page != root/'index.html':
+                  assert any(d.get('@type') == 'BreadcrumbList' for d in data), page
+              if page.parent.parent.name == 'hizmetler':
+                  assert 'İlgili elektrik hizmetleri' in html, page
+              if page.parent.parent.name == 'blog':
+                  assert 'Bu konuda yerinde hizmet' in html, page
+          assert len(set(titles)) == len(titles), 'Duplicate page titles'
+          js = (root/'assets/site.js').read_text(encoding='utf-8')
+          assert 'G-7XXDVG2JWK' in js and 'phone_click' in js, 'GA4 code missing'
+          assert len(re.findall(r'<loc>', (root/'sitemap.xml').read_text(encoding='utf-8'))) == 31
+          assert (root/'CNAME').exists(), 'Pages custom domain missing'
+          print('PASS: 31 pages, unique titles, breadcrumbs, internal links, sitemap, GA4 and CNAME')
+          PY
