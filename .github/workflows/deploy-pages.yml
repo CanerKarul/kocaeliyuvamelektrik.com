@@ -24,6 +24,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Generate SEO-ready pages
+        run: |
+          cd Kocaeli_Yuvam_Elektrik_Logo_Uyumlu_Web_Sitesi
+          python3 -m py_compile build_site.py
+          python3 build_site.py
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
