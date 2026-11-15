@@ -74,3 +74,14 @@ Kapsam dışı tutulan işler: **ofis tadilatı/dekorasyonu, telefon santrali ku
 ## Teknik kalite kontrol
 
 Statik dosyalarda 31 sayfanın tüm iç bağlantıları ve arama bağlantıları kontrol edildi. Chromium ile **1440 px, 850 px, 390 px ve 360 px** ekranlarda görsel taşma, logo yükleme ve JavaScript konsol hatası kontrolü yapıldı. Mobil menü açılma testi ve hizmet arama filtresi testi geçti. Farklı gerçek cihazlarda ve yayın alan adında son kontrolleri de yapmanız önerilir.
+
+## Google Analytics 4 ve çerez tercihi (15 Kasım 2026)
+
+- Ölçüm kimliği: `G-7XXDVG2JWK`.
+- Kod, `site/assets/site.js` içinde bulunur ve tüm sayfalarda ortak olarak yüklenir.
+- Google Analytics betiği, ziyaretçi açıkça kabul etmeden indirilmez; tercih yerel depolamada saklanır.
+- Alt bilgideki **Çerez tercihlerini değiştir** düğmesiyle onay geri çekilebilir.
+- Telefon bağlantıları `phone_click`, iletişim sayfası ziyaretleri `contact_view` etkinliğini gönderir.
+- GitHub Pages yayını `site/` dizinini kullandığı için kaynak `build_site.py` ve üretilmiş gizlilik sayfası birlikte güncellenmiştir.
+- Google Analytics'te etiketin algılanması ve canlı ziyaret testleri için test tarayıcısında **Kabul et** seçilmelidir.
+- KVKK, saklama süresi ve sınır ötesi aktarım yükümlülüklerinin gerçek uygulamaya göre hukuken değerlendirilmesi gerekir.
