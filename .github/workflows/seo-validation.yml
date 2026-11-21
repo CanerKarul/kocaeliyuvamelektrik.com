@@ -39,6 +39,8 @@ jobs:
           assert '<a href="../../">Ana Sayfa</a>' in fault, "Service-page navigation must link to canonical root"
           assert "Google Haritalar’daki işletme profilimizden" in home, "Real Google review evidence link missing on homepage"
           assert "Bayram Canseven" in home, "Verified service contact should appear on homepage"
+          assert "İzmit’te elektrikçi çağırmadan önce hangi bilgileri hazırlamalısınız?" in home, "Izmit electrician pre-call guidance missing"
+          assert "Elektrik arıza tespiti ve tamiri" in home and "Sigorta ve kaçak akım rölesi kontrolü" in home, "Helpful service paths missing"
           review_url = "https://search.google.com/local/writereview?placeid=ChIJNWiF-ZRPyxQR55gyVTfKG-4"
           assert review_url in home and review_url in contact, "Authentic Google review invite link missing"
           assert "Hizmet aldıysanız değerlendirme bırakın" in home, "Footer review CTA missing"
@@ -60,6 +62,9 @@ jobs:
               )
           ]
           business = next(x for x in structured if x.get("@type") == "Electrician")
+          area_names = [area.get("name", "") for area in business["areaServed"]]
+          assert "İzmit Merkez, İzmit, Kocaeli, Türkiye" in area_names, "Izmit city service area missing"
+          assert not any("Kocaeli Diğer İlçeler" in name for name in area_names), "Conditional district service area must not be asserted as Izmit"
           specs = business["openingHoursSpecification"]
           assert len(specs) == 1, "Expected one all-week opening hours spec"
           spec = specs[0]
